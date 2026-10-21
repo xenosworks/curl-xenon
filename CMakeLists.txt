@@ -66,6 +66,11 @@ project(CURL
   VERSION "${_curl_version_sem}"
   LANGUAGES C)
 
+# The Xbox 360 through xsdk, whose toolchain file sets XSDK
+if(XSDK)
+  include("${PROJECT_SOURCE_DIR}/CMake/xsdk.cmake")
+endif()
+
 # CMake does not recognize some targets accurately. Touch up configuration manually as a workaround.
 if(WINDOWS_STORE AND MINGW)  # MinGW UWP build
   # CMake (as of 3.31.2) gets confused and applies the MSVC rc.exe command-line
