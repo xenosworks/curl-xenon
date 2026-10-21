@@ -47,15 +47,6 @@ set(CURL_USE_CMAKECONFIG ON CACHE BOOL "${_xsdk_doc}")
 set(CURL_CA_BUNDLE "none" CACHE STRING "${_xsdk_doc}")
 set(CURL_CA_PATH "none" CACHE STRING "${_xsdk_doc}")
 
-# Where curl's checks can't see xsdk as it is. xsdk's netdb.h, netinet/tcp.h
-# and sys/socket.h give these as enum values, not macros, so curl's #ifdef
-# tests miss them: EAI_NONAME's fallback, EAI_NODATA, doesn't build, and
-# TCP_NODELAY and SO_ERROR would go unused. And newlib's libgen.h declares
-# basename, which xsdk's libc.a doesn't have.
-add_compile_definitions(EAI_NONAME=EAI_NONAME AI_NUMERICSERV=AI_NUMERICSERV
-  TCP_NODELAY=TCP_NODELAY SO_ERROR=SO_ERROR)
-set(HAVE_BASENAME 0)
-
 # HTTP and HTTPS only. The socket pair binds 127.0.0.1, which XAM refuses
 # (xsdk:docs/HARDWARE.md, "XAM's sockets and loader, milestone 56").
 foreach(_xsdk_feature IN ITEMS

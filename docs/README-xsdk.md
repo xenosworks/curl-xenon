@@ -42,9 +42,6 @@ xsdk's `xsdk_add_xex()`.
     xsdk's `getaddrinfo` can hold for 30 s.
 -   No socket pair (`CURL_DISABLE_SOCKETPAIR`): curl's binds 127.0.0.1, which XAM refuses. So `curl_multi_wakeup` isn't
     there, and `curl_multi_poll` waits until a socket is ready or its timeout ends.
--   Where curl's checks can't see xsdk, `CMake/xsdk.cmake` says so: xsdk gives `EAI_NONAME`, `AI_NUMERICSERV`,
-    `TCP_NODELAY` and `SO_ERROR` as enum values, which curl's `#ifdef`s miss, and its newlib declares `basename`
-    without having it.
 -   Build with an xsdk toolchain that keeps LR to 32-bit values, as mbedtls-xenon's notes say.
 
 ## The check title
