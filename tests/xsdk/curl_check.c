@@ -65,6 +65,8 @@
 #define RATE_FILE "hdd:/curl_check_rate.part"
 #define UNKNOWN_HOST "http://nothing.invalid/"
 #define PUBLIC_DOWNLOAD "https://speed.cloudflare.com/__down?bytes=5000000"
+/* 21 MB, which github.com redirects to its storage */
+#define GITHUB_DOWNLOAD "https://github.com/xenosworks/dusklight-xenon/"   "releases/download/xenon-beta-1/Dusklight-Xbox360-beta-1.zip"
 
 #define SPLASH_MS 2000
 /* Public hosts' handshakes have taken over a second */
@@ -742,8 +744,10 @@ static void log_rate(const char *what, const char *url, const char *ca,
     t.file = fopen(path, "wb");
   if(path && !t.file)
     printf("curl check: can't open %s: %d\n", path, errno);
-  else if(prepare(&t, url, ca))
+  else if(prepare(&t, url, ca)) {
+    curl_easy_setopt(t.curl, CURLOPT_FOLLOWLOCATION, 1L);
     result = run(&t, url);
+  }
   if(t.file) {
     if(fflush(t.file) || fsync(fileno(t.file)))
       result = CURLE_WRITE_ERROR;
@@ -784,6 +788,9 @@ static void log_rates(void)
            PUBLIC_DOWNLOAD, PUBLIC_CA, 0, NULL);
   log_rate("HTTPS from speed.cloudflare.com, into memory, raised buffers",
            PUBLIC_DOWNLOAD, PUBLIC_CA, 1, NULL);
+  /* Step 1 of xsdk's docs/scope/63-homebrew-store.md */
+  log_rate("HTTPS from a GitHub release, into memory, raised buffers",
+           GITHUB_DOWNLOAD, PUBLIC_CA, 1, NULL);
 }
 
 static void run_checks(void)
